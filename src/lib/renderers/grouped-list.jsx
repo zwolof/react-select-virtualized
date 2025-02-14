@@ -12,8 +12,6 @@ export const groupVirtualizedListRowRenderer =
       onOptionFocused({ data: thisProps.data, index, isVisible, isScrolling });
     }
 
-    console.log('groupVirtualizedListRowRenderer render', formatGroupHeader);
-
     return (
       <div className="grouped-virtualized-list-item" key={key} style={style}>
         {isGroupHeaderValue ? (

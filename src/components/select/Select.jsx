@@ -64,9 +64,8 @@ const SelectComponent = (props, ref) => {
     if (!grouped && !formatOptionLabel) {
       return { formatOptionLabel: false };
     }
-    console.log('memoOptionLabelOptions', formatOptionLabel);
     return {
-      formatOptionLabel: formatOptionLabel || '(({ label }) => label)',
+      formatOptionLabel: formatOptionLabel || (({ label }) => label),
     };
   }, [grouped, formatOptionLabel]);
 
