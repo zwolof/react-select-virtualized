@@ -20,8 +20,17 @@ const throwMixControlledError = () => {
 const SelectComponent = (props, ref) => {
   const reactSelect = useRef('react-select');
 
-  const { grouped, formatGroupHeaderLabel, groupHeaderHeight, onChange, defaultValue, value, optionHeight, creatable } =
-    props;
+  const {
+    grouped,
+    formatGroupHeaderLabel,
+    formatOptionLabel,
+    groupHeaderHeight,
+    onChange,
+    defaultValue,
+    value,
+    optionHeight,
+    creatable,
+  } = props;
 
   if (defaultValue && value) {
     throwMixControlledError();
@@ -48,7 +57,18 @@ const SelectComponent = (props, ref) => {
       groupHeaderHeight: groupHeaderHeightValue,
       formatGroupHeaderLabel: formatGroupHeaderLabel || defaultGroupFormat(groupHeaderHeightValue),
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [grouped, formatGroupHeaderLabel, groupHeaderHeight, optionHeight]);
+
+  const memoOptionLabelOptions = useMemo(() => {
+    if (!grouped && !formatOptionLabel) {
+      return { formatOptionLabel: false };
+    }
+    console.log('memoOptionLabelOptions', formatOptionLabel);
+    return {
+      formatOptionLabel: formatOptionLabel || '(({ label }) => label)',
+    };
+  }, [grouped, formatOptionLabel]);
 
   const onChangeHandler = useCallback(
     (valueChanged, { action }) => {
@@ -94,6 +114,7 @@ const SelectComponent = (props, ref) => {
         ...buildListComponents({
           ...props,
           ...memoGroupHeaderOptions,
+          ...memoOptionLabelOptions,
         }),
       }} // props.components comes from react-select if present
     />
@@ -110,6 +131,7 @@ Select.propTypes = {
   onChange: PropTypes.func,
   grouped: PropTypes.bool, // this is only for performance enhancement so we do not need to iterate in the array many times. It is not needed if formatGroupHeaderLabel or groupHeaderHeight are defined
   formatGroupHeaderLabel: PropTypes.func,
+  formatOptionLabel: PropTypes.func,
   optionHeight: PropTypes.number,
   groupHeaderHeight: PropTypes.number,
   defaultValue: PropTypes.object,
@@ -118,7 +140,7 @@ Select.propTypes = {
 
 Select.defaultProps = {
   grouped: false,
-  optionHeight: 31,
+  optionHeight: 32,
   creatable: false,
   onChange: () => {},
 };
